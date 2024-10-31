@@ -2,6 +2,7 @@ import { inject, injectable } from "inversify";
 import type { TasksRepository } from "../../TasksRepository.ts";
 import { TYPES } from "../../types.inversify.ts";
 import { GetTasksQuery } from "./getTasksQuery.ts";
+import { TaskSorter } from "../../TaskSorter.ts";
 
 @injectable()
 export class GetTasksQueryHandler {
@@ -14,17 +15,9 @@ export class GetTasksQueryHandler {
   public async handle(query: GetTasksQuery) {
     const all = await this.tasksRepository.getAll();
 
-    const foo = all.filter((task) =>
-      query.includeDone ? true : task.doneAt == null
-    ).toSorted((a, b) => {
-      if (a.dueDate != null && b.dueDate != null) {
-        return b.dueDate.getTime() - a.dueDate.getTime();
-      }
+    const tasksSorted = TaskSorter.sort(all, query.includeDone);
 
-      return 0;
-    });
-
-    foo.forEach((task) => {
+    tasksSorted.forEach((task) => {
       console.log(
         `Prio ${task.priority} ${task.id} - "${task.name}" (${
           task.doneAt == null ? "not done" : "done"
