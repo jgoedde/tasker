@@ -8,7 +8,6 @@
     "npm:inversify@^6.0.3": "6.0.3",
     "npm:nanoid@^5.0.8": "5.0.8",
     "npm:promptly@^3.2.0": "3.2.0",
-    "npm:purify-ts@^2.1.0": "2.1.0",
     "npm:reflect-metadata@~0.2.2": "0.2.2",
     "npm:zod@^3.23.8": "3.23.8"
   },
@@ -27,9 +26,6 @@
     }
   },
   "npm": {
-    "@types/json-schema@7.0.15": {
-      "integrity": "sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA=="
-    },
     "commander@12.1.0": {
       "integrity": "sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA=="
     },
@@ -46,12 +42,6 @@
       "integrity": "sha512-WnR9obtgW+rG4oUV3hSnNGl1pHm3V1H/qD9iJBumGSmVsSC5HpZOLuu8qdMb6yCItGfT7dcRszejr/5P3i9Pug==",
       "dependencies": [
         "read"
-      ]
-    },
-    "purify-ts@2.1.0": {
-      "integrity": "sha512-+KNUHV9FxB9BbjadFdvxa+LNJIaqZmSF7CQH5Rv6+f0rBzsxm9FEqrvkALQbWYJobAja2ZCbBDUY7O4fH2znMA==",
-      "dependencies": [
-        "@types/json-schema"
       ]
     },
     "read@1.0.7": {
@@ -74,7 +64,6 @@
       "npm:inversify@^6.0.3",
       "npm:nanoid@^5.0.8",
       "npm:promptly@^3.2.0",
-      "npm:purify-ts@^2.1.0",
       "npm:reflect-metadata@~0.2.2",
       "npm:zod@^3.23.8"
     ]

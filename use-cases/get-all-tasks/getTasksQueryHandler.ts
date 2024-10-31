@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
-import type { TasksRepository } from "../../TasksRepository.ts";
-import { TYPES } from "../../types.inversify.ts";
+import type { TasksRepository } from "../../services/TasksRepository.ts";
+import { TYPES } from "../../dependency-injection/types.inversify.ts";
 import { GetTasksQuery } from "./getTasksQuery.ts";
-import { TaskSorter } from "../../TaskSorter.ts";
+import { TaskSorter } from "../../services/TaskSorter.ts";
 
 @injectable()
 export class GetTasksQueryHandler {

@@ -1,9 +1,8 @@
-import { TasksRepository } from "./TasksRepository.ts";
-import { Task, TaskId } from "./Task.ts";
+import { TasksRepository } from "../services/TasksRepository.ts";
+import { Task, TaskId } from "../entities/Task.ts";
 import { inject, injectable } from "inversify";
-import { PathProvider } from "./PathProvider.ts";
-import { TYPES } from "./types.inversify.ts";
-import { Maybe } from "purify-ts/Maybe";
+import { PathProvider } from "../services/PathProvider.ts";
+import { TYPES } from "../dependency-injection/types.inversify.ts";
 import { TaskDTO } from "./TaskDto.ts";
 
 @injectable()
@@ -12,12 +11,12 @@ export class TasksFileSystemRepository implements TasksRepository {
     @inject(TYPES.PathProvider) private readonly pathProvider: PathProvider,
   ) {
   }
-  async getById(taskId: TaskId): Promise<Maybe<Task>> {
+  async getById(taskId: TaskId): Promise<Task | undefined> {
     await this.prepareTasksFile();
 
     const tasks = await this.getAll();
 
-    return Maybe.fromNullable(tasks.find((task) => task.id === taskId));
+    return tasks.find((task) => task.id === taskId);
   }
 
   async add(task: Task): Promise<void> {

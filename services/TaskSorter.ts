@@ -1,4 +1,4 @@
-import { Task, TaskPriority } from "./Task.ts";
+import { Task, TaskPriority } from "../entities/Task.ts";
 
 class TaskDueDateComparator {
   static compare(a: Task, b: Task): number {

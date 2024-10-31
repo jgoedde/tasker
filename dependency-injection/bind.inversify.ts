@@ -1,12 +1,12 @@
 import { Container } from "inversify";
-import { TasksRepository } from "./TasksRepository.ts";
-import { TasksFileSystemRepository } from "./TasksFileSystemRepository.ts";
-import { GetTasksQueryHandler } from "./use-cases/get-all-tasks/getTasksQueryHandler.ts";
+import { TasksRepository } from "../services/TasksRepository.ts";
+import { TasksFileSystemRepository } from "../persistence/TasksFileSystemRepository.ts";
+import { GetTasksQueryHandler } from "../use-cases/get-all-tasks/getTasksQueryHandler.ts";
 import { TYPES } from "./types.inversify.ts";
-import { PathProvider } from "./PathProvider.ts";
-import { AddTaskCommandHandler } from "./use-cases/add-task/addTaskCommandHandler.ts";
-import { DateProvider } from "./DateProvider.ts";
-import { RemoveTaskCommandHandler } from "./use-cases/remove-task/removeTaskCommandHandler.ts";
+import { PathProvider } from "../services/PathProvider.ts";
+import { AddTaskCommandHandler } from "../use-cases/add-task/addTaskCommandHandler.ts";
+import { DateProvider } from "../services/DateProvider.ts";
+import { RemoveTaskCommandHandler } from "../use-cases/remove-task/removeTaskCommandHandler.ts";
 
 export const container = new Container();
 

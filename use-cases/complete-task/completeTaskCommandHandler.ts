@@ -1,7 +1,7 @@
-import { TYPES } from "../../types.inversify.ts";
-import type { TasksRepository } from "../../TasksRepository.ts";
+import { TYPES } from "../../dependency-injection/types.inversify.ts";
+import type { TasksRepository } from "../../services/TasksRepository.ts";
 import { inject, injectable } from "inversify";
-import { DateProvider } from "../../DateProvider.ts";
+import { DateProvider } from "../../services/DateProvider.ts";
 import { CompleteTaskCommand } from "./completeTaskCommand.ts";
 
 @injectable()
@@ -14,14 +14,15 @@ export class CompleteTaskCommandHandler {
   }
 
   public async handle(command: CompleteTaskCommand) {
-    (await this.tasksRepository.getById(command.taskId))
-      .ifJust(async (task) => {
-        task.complete(this.dateProvider.now());
+    const task = await this.tasksRepository.getById(command.taskId);
+    if (task) {
+      task.complete(this.dateProvider.now());
 
-        await this.tasksRepository.update(task);
-      })
-      .ifNothing(() => {
-        console.error("There is no such task with id " + command.taskId);
-      });
+      await this.tasksRepository.update(task);
+
+      console.info("Hurray! Task done.");
+    } else {
+      console.error("There is no such task with id " + command.taskId);
+    }
   }
 }

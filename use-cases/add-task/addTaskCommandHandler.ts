@@ -1,10 +1,10 @@
-import { TYPES } from "../../types.inversify.ts";
-import type { TasksRepository } from "../../TasksRepository.ts";
+import { TYPES } from "../../dependency-injection/types.inversify.ts";
+import type { TasksRepository } from "../../services/TasksRepository.ts";
 import { AddTaskCommand } from "./addTaskCommand.ts";
 import { inject, injectable } from "inversify";
 import { nanoid } from "nanoid";
-import { DateProvider } from "../../DateProvider.ts";
-import { Task } from "../../Task.ts";
+import { DateProvider } from "../../services/DateProvider.ts";
+import { Task } from "../../entities/Task.ts";
 
 @injectable()
 export class AddTaskCommandHandler {

@@ -1,7 +1,7 @@
-import { TYPES } from "../../types.inversify.ts";
-import type { TasksRepository } from "../../TasksRepository.ts";
+import { TYPES } from "../../dependency-injection/types.inversify.ts";
+import type { TasksRepository } from "../../services/TasksRepository.ts";
 import { inject, injectable } from "inversify";
-import { DateProvider } from "../../DateProvider.ts";
+import { DateProvider } from "../../services/DateProvider.ts";
 import { RemoveTaskCommand } from "./removeTaskCommand.ts";
 
 @injectable()

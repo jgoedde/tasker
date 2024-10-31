@@ -1,4 +1,4 @@
-import { TaskPriority } from "../../Task.ts";
+import { TaskPriority } from "../../entities/Task.ts";
 
 export class AddTaskCommand {
   constructor(

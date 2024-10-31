@@ -1,17 +1,17 @@
 import "reflect-metadata";
 import { Command } from "commander";
-import { container, installDependencies } from "./dependencyInjection.ts";
+import { container, installDependencies } from "./dependency-injection/bind.inversify.ts";
 import { GetTasksQueryHandler } from "./use-cases/get-all-tasks/getTasksQueryHandler.ts";
 import { AddTaskCommand } from "./use-cases/add-task/addTaskCommand.ts";
 import { AddTaskCommandHandler } from "./use-cases/add-task/addTaskCommandHandler.ts";
 import { CompleteTaskCommand } from "./use-cases/complete-task/completeTaskCommand.ts";
 import { CompleteTaskCommandHandler } from "./use-cases/complete-task/completeTaskCommandHandler.ts";
 import promptly from "promptly";
-import { PathProvider } from "./PathProvider.ts";
+import { PathProvider } from "./services/PathProvider.ts";
 import { GetTasksQuery } from "./use-cases/get-all-tasks/getTasksQuery.ts";
 import { RemoveTaskCommandHandler } from "./use-cases/remove-task/removeTaskCommandHandler.ts";
 import { RemoveTaskCommand } from "./use-cases/remove-task/removeTaskCommand.ts";
-import { TaskPriority } from "./Task.ts";
+import { TaskPriority } from "./entities/Task.ts";
 
 installDependencies();
 

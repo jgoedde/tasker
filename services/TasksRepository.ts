@@ -1,8 +1,7 @@
-import { Task, TaskId } from "./Task.ts";
-import { Maybe } from "purify-ts/Maybe";
+import { Task, TaskId } from "../entities/Task.ts";
 
 export interface TasksRepository {
-  getById(taskId: TaskId): Promise<Maybe<Task>>;
+  getById(taskId: TaskId): Promise<Task | undefined>;
 
   getAll(): Promise<Task[]>;
 
