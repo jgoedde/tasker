@@ -4,6 +4,7 @@ import { inject, injectable } from "inversify";
 import { PathProvider } from "./PathProvider.ts";
 import { TYPES } from "./types.inversify.ts";
 import { Maybe } from "purify-ts/Maybe";
+import { TaskDTO } from "./TaskDto.ts";
 
 @injectable()
 export class TasksFileSystemRepository implements TasksRepository {
@@ -26,7 +27,9 @@ export class TasksFileSystemRepository implements TasksRepository {
 
     const textEncoder = new TextEncoder();
 
-    const uint8Array = textEncoder.encode(JSON.stringify([...tasks, task]));
+    const uint8Array = textEncoder.encode(
+      JSON.stringify([...tasks, task].map(TaskDTO.toJSON)),
+    );
 
     await Deno.writeFile(this.pathProvider.getTasksFile(), uint8Array);
   }
@@ -48,20 +51,14 @@ export class TasksFileSystemRepository implements TasksRepository {
   async getAll(): Promise<Task[]> {
     await this.prepareTasksFile();
 
-    const uint8Array = await Deno.readFile(this.pathProvider.getTasksFile());
+    const stringified = new TextDecoder().decode(
+      await Deno.readFile(this.pathProvider.getTasksFile()),
+    );
 
-    return (JSON.parse(new TextDecoder().decode(uint8Array)) as Array<unknown>)
-      .map((t) =>
-        new Task(
-          t._id,
-          t._name,
-          t._createdAt,
-          t._priority,
-          t._doneAt,
-          t._dueDate,
-          t._lastModifiedAt,
-        )
-      );
+    return (JSON.parse(stringified) as Array<
+      Record<string, any>
+    >)
+      .map(TaskDTO.fromJSON);
   }
 
   async update(task: Task): Promise<void> {
@@ -72,7 +69,9 @@ export class TasksFileSystemRepository implements TasksRepository {
     tasks[tasks.findIndex((t) => t.id === task.id)] = task;
 
     const textEncoder = new TextEncoder();
-    const uint8Array = textEncoder.encode(JSON.stringify(tasks));
+    const uint8Array = textEncoder.encode(
+      JSON.stringify(tasks.map(TaskDTO.toJSON)),
+    );
 
     await Deno.writeFile(this.pathProvider.getTasksFile(), uint8Array);
   }
