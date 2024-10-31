@@ -37,8 +37,9 @@ export class TasksFileSystemRepository implements TasksRepository {
     const tasks = await this.getAll();
 
     const textEncoder = new TextEncoder();
+    const newList = tasks.filter((task) => task.id !== taskId);
     const uint8Array = textEncoder.encode(
-      JSON.stringify(tasks.filter((task) => task.id !== taskId)),
+      JSON.stringify(newList),
     );
 
     await Deno.writeFile(this.pathProvider.getTasksFile(), uint8Array);
@@ -51,14 +52,14 @@ export class TasksFileSystemRepository implements TasksRepository {
 
     return (JSON.parse(new TextDecoder().decode(uint8Array)) as Array<unknown>)
       .map((t) =>
-          new Task(
-              t._id,
-              t._name,
-              t._createdAt,
-              t._doneAt,
-              t._dueDate,
-              t._lastModifiedAt
-          )
+        new Task(
+          t._id,
+          t._name,
+          t._createdAt,
+          t._doneAt,
+          t._dueDate,
+          t._lastModifiedAt,
+        )
       );
   }
 

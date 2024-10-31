@@ -4,4 +4,5 @@ export const TYPES = {
   PathProvider: Symbol.for("PathProvider"),
   AddTaskCommandHandler: Symbol.for("AddTaskCommandHandler"),
   DateProvider: Symbol.for("DateProvider"),
+  RemoveTaskCommandHandler: Symbol.for("RemoveTaskCommandHandler"),
 };

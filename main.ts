@@ -1,13 +1,16 @@
 import "reflect-metadata";
 import { Command } from "commander";
 import { container, installDependencies } from "./dependencyInjection.ts";
-import { QueryTasksHandler } from "./use-cases/get-all-tasks/queryTasksHandler.ts";
+import { GetTasksQueryHandler } from "./use-cases/get-all-tasks/getTasksQueryHandler.ts";
 import { AddTaskCommand } from "./use-cases/add-task/addTaskCommand.ts";
 import { AddTaskCommandHandler } from "./use-cases/add-task/addTaskCommandHandler.ts";
 import { CompleteTaskCommand } from "./use-cases/complete-task/completeTaskCommand.ts";
 import { CompleteTaskCommandHandler } from "./use-cases/complete-task/completeTaskCommandHandler.ts";
 import promptly from "promptly";
 import { PathProvider } from "./PathProvider.ts";
+import { GetTasksQuery } from "./use-cases/get-all-tasks/getTasksQuery.ts";
+import {RemoveTaskCommandHandler} from "./use-cases/remove-task/removeTaskCommandHandler.ts";
+import {RemoveTaskCommand} from "./use-cases/remove-task/removeTaskCommand.ts";
 
 installDependencies();
 
@@ -21,7 +24,7 @@ program
 program
   .command("add")
   .description("Add a new task")
-  .argument('"<task>"', "Task description")
+  .argument('<task>', "Task description")
   .option("--due <date>", "Due date for the task")
   .action((task, options) => {
     const handler = container.resolve(AddTaskCommandHandler);
@@ -32,8 +35,14 @@ program
 program
   .command("list")
   .description("List all tasks")
-  .action(() => {
-    void container.resolve(QueryTasksHandler).handle();
+  .option(
+    "--include-done",
+    "Already completed tasks are included in the output",
+  )
+  .action((options) => {
+    void container.resolve(GetTasksQueryHandler).handle(
+      new GetTasksQuery(options.includeDone ?? false),
+    );
   });
 
 // Done command
@@ -52,7 +61,7 @@ program
   .description("Remove a task")
   .argument("<id>", "ID of the task to remove")
   .action((id) => {
-    console.log("removed: " + id);
+      void container.resolve(RemoveTaskCommandHandler).handle(new RemoveTaskCommand(id))
   });
 
 program
