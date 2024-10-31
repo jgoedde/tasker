@@ -4,6 +4,7 @@
     "jsr:@std/assert@1": "1.0.6",
     "jsr:@std/internal@^1.0.4": "1.0.4",
     "jsr:@std/path@*": "1.0.7",
+    "npm:chrono-node@^2.7.7": "2.7.7",
     "npm:commander@^12.1.0": "12.1.0",
     "npm:inversify@^6.0.3": "6.0.3",
     "npm:nanoid@^5.0.8": "5.0.8",
@@ -26,8 +27,17 @@
     }
   },
   "npm": {
+    "chrono-node@2.7.7": {
+      "integrity": "sha512-p3S7gotuTPu5oqhRL2p1fLwQXGgdQaRTtWR3e8Di9P1Pa9mzkK5DWR5AWBieMUh2ZdOnPgrK+zCrbbtyuA+D/Q==",
+      "dependencies": [
+        "dayjs"
+      ]
+    },
     "commander@12.1.0": {
       "integrity": "sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA=="
+    },
+    "dayjs@1.11.13": {
+      "integrity": "sha512-oaMBel6gjolK862uaPQOVTA7q3TZhuSvuMQAAglQDOWYO9A91IrAOUJEyKVlqJlHE0vq5p5UXxzdPfMH/x6xNg=="
     },
     "inversify@6.0.3": {
       "integrity": "sha512-s/svzcRQ/scaGUUyaVtFSL1dvOaRgyvE7VvpGcJwXmFz7CCzfSfxC/Uyl7iSHDEmBabJ2gbDES72DaygtMmwvg=="
@@ -60,6 +70,7 @@
   "workspace": {
     "dependencies": [
       "jsr:@std/assert@1",
+      "npm:chrono-node@^2.7.7",
       "npm:commander@^12.1.0",
       "npm:inversify@^6.0.3",
       "npm:nanoid@^5.0.8",

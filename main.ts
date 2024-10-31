@@ -1,6 +1,9 @@
 import "reflect-metadata";
-import { Command } from "commander";
-import { container, installDependencies } from "./dependency-injection/bind.inversify.ts";
+import { Command, InvalidArgumentError } from "commander";
+import {
+  container,
+  installDependencies,
+} from "./dependency-injection/bind.inversify.ts";
 import { GetTasksQueryHandler } from "./use-cases/get-all-tasks/getTasksQueryHandler.ts";
 import { AddTaskCommand } from "./use-cases/add-task/addTaskCommand.ts";
 import { AddTaskCommandHandler } from "./use-cases/add-task/addTaskCommandHandler.ts";
@@ -12,6 +15,8 @@ import { GetTasksQuery } from "./use-cases/get-all-tasks/getTasksQuery.ts";
 import { RemoveTaskCommandHandler } from "./use-cases/remove-task/removeTaskCommandHandler.ts";
 import { RemoveTaskCommand } from "./use-cases/remove-task/removeTaskCommand.ts";
 import { TaskPriority } from "./entities/Task.ts";
+import { z } from "zod";
+import * as chrono from "chrono-node";
 
 installDependencies();
 
@@ -26,17 +31,33 @@ program
   .command("add")
   .description("Add a new task")
   .argument("<task>", "Task description")
-  .option("-d, --due <date>", "Due date for the task")
+  .option("-d, --due <date>", "Due date for the task", (dateStr) => {
+    const parsedDate = chrono.parseDate(dateStr);
+    if (parsedDate == null) {
+      throw new InvalidArgumentError("Unable to parse your date.");
+    }
+
+    return parsedDate;
+  })
   .option(
     "-p, --priority <prio>",
-    "The priority of the task. Possible values are " +
-      Object.values(TaskPriority).join(", "),
-    TaskPriority.STANDARD,
+    `The priority of the task. Possible values are ${
+      Object.values(TaskPriority).join(", ")
+    } (default: Standard)`,
+    (prioStr, _) => {
+      const priority = z.nativeEnum(TaskPriority).safeParse(prioStr);
+      if (priority.success) {
+        return priority.data;
+      }
+
+      throw new InvalidArgumentError(
+        `Possible values are ${Object.values(TaskPriority).join(", ")}`,
+      );
+    },
   )
   .action((task, options) => {
     const handler = container.resolve(AddTaskCommandHandler);
 
-    console.log(options);
     void handler.handle(
       new AddTaskCommand(task, options?.dueDate, options?.priority),
     );
