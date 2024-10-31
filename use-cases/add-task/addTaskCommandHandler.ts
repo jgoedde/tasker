@@ -20,9 +20,12 @@ export class AddTaskCommandHandler {
       nanoid(10),
       command.task,
       this.dateProvider.now(),
+      command.priority,
       command.dueDate,
     );
     await this.tasksRepository.add(newTask);
-    console.log(`Added new task "${command.task}" (${newTask.id})`);
+    console.log(
+      `Added new ${command.priority} priority task "${command.task}" (${newTask.id})`,
+    );
   }
 }

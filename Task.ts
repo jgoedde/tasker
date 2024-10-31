@@ -1,10 +1,25 @@
+export enum TaskPriority {
+  LOW = "Low",
+  STANDARD = "Standard",
+  HIGH = "High",
+  HIGHEST = "Highest",
+}
+
 export class Task {
+  get priority(): TaskPriority {
+    return this._priority;
+  }
+
+  set priority(value: TaskPriority) {
+    this._priority = value;
+  }
   private readonly _id: TaskId;
   private _name: string;
   private _dueDate?: Date;
   private _doneAt?: Date;
   private readonly _createdAt: Date;
   private _lastModifiedAt?: Date;
+  private _priority: TaskPriority;
 
   get id(): TaskId {
     return this._id;
@@ -34,6 +49,7 @@ export class Task {
     id: TaskId,
     name: string,
     createdAt: Date,
+    priority: TaskPriority,
     doneAt?: Date,
     dueDate?: Date,
     lastModifiedAt?: Date,
@@ -44,29 +60,44 @@ export class Task {
     this._doneAt = doneAt;
     this._createdAt = createdAt;
     this._lastModifiedAt = lastModifiedAt;
+    this._priority = priority;
   }
 
   public complete(now: Date) {
     this._doneAt = now;
   }
 
-  public changeName(name: string, now: Date) {
+  public changeName(name: string) {
     this._name = name;
-    this._lastModifiedAt = now;
+    this._lastModifiedAt = new Date();
   }
 
-  public setNewDueDate(due: Date, now: Date) {
+  public setNewDueDate(due: Date) {
     this._dueDate = due;
-    this._lastModifiedAt = now;
+    this._lastModifiedAt = new Date();
+  }
+
+  public updatePriority(priority: TaskPriority) {
+    this._priority = priority;
+    this._lastModifiedAt = new Date();
   }
 
   public static create(
     id: TaskId,
     name: string,
     createdAt: Date,
+    priority: TaskPriority = TaskPriority.STANDARD,
     dueDate?: Date,
   ) {
-    return new Task(id, name, createdAt, undefined, dueDate, undefined);
+    return new Task(
+      id,
+      name,
+      createdAt,
+      priority,
+      undefined,
+      dueDate,
+      undefined,
+    );
   }
 }
 

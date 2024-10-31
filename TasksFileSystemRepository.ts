@@ -56,6 +56,7 @@ export class TasksFileSystemRepository implements TasksRepository {
           t._id,
           t._name,
           t._createdAt,
+          t._priority,
           t._doneAt,
           t._dueDate,
           t._lastModifiedAt,

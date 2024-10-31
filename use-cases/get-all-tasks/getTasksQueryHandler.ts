@@ -25,7 +25,11 @@ export class GetTasksQueryHandler {
     });
 
     foo.forEach((task) => {
-      console.log(`${task.id} - "${task.name}" (${task.doneAt == null ? "not done" : "done"}), created at ${task.createdAt}`);
+      console.log(
+        `Prio ${task.priority} ${task.id} - "${task.name}" (${
+          task.doneAt == null ? "not done" : "done"
+        }), created at ${task.createdAt}`,
+      );
     });
   }
 }

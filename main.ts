@@ -9,8 +9,9 @@ import { CompleteTaskCommandHandler } from "./use-cases/complete-task/completeTa
 import promptly from "promptly";
 import { PathProvider } from "./PathProvider.ts";
 import { GetTasksQuery } from "./use-cases/get-all-tasks/getTasksQuery.ts";
-import {RemoveTaskCommandHandler} from "./use-cases/remove-task/removeTaskCommandHandler.ts";
-import {RemoveTaskCommand} from "./use-cases/remove-task/removeTaskCommand.ts";
+import { RemoveTaskCommandHandler } from "./use-cases/remove-task/removeTaskCommandHandler.ts";
+import { RemoveTaskCommand } from "./use-cases/remove-task/removeTaskCommand.ts";
+import { TaskPriority } from "./Task.ts";
 
 installDependencies();
 
@@ -24,12 +25,21 @@ program
 program
   .command("add")
   .description("Add a new task")
-  .argument('<task>', "Task description")
-  .option("--due <date>", "Due date for the task")
+  .argument("<task>", "Task description")
+  .option("-d, --due <date>", "Due date for the task")
+  .option(
+    "-p, --priority <prio>",
+    "The priority of the task. Possible values are " +
+      Object.values(TaskPriority).join(", "),
+    TaskPriority.STANDARD,
+  )
   .action((task, options) => {
     const handler = container.resolve(AddTaskCommandHandler);
 
-    void handler.handle(new AddTaskCommand(task, options?.dueDate));
+    console.log(options);
+    void handler.handle(
+      new AddTaskCommand(task, options?.dueDate, options?.priority),
+    );
   });
 
 program
@@ -61,7 +71,9 @@ program
   .description("Remove a task")
   .argument("<id>", "ID of the task to remove")
   .action((id) => {
-      void container.resolve(RemoveTaskCommandHandler).handle(new RemoveTaskCommand(id))
+    void container.resolve(RemoveTaskCommandHandler).handle(
+      new RemoveTaskCommand(id),
+    );
   });
 
 program
