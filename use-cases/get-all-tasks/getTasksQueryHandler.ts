@@ -17,6 +17,11 @@ export class GetTasksQueryHandler {
 
     const tasksSorted = TaskSorter.sort(all, query.includeDone);
 
+    if(tasksSorted.length === 0) {
+      console.log("There are no tasks to do.")
+      return;
+    }
+
     tasksSorted.forEach((task) => {
       console.log(
         `Prio ${task.priority} ${task.id} - "${task.name}" (${
