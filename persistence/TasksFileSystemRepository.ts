@@ -4,6 +4,7 @@ import { inject, injectable } from "inversify";
 import { PathProvider } from "../services/PathProvider.ts";
 import { TYPES } from "../dependency-injection/types.inversify.ts";
 import { TaskDTO } from "./TaskDto.ts";
+import fuzzy from "fuzzy";
 
 @injectable()
 export class TasksFileSystemRepository implements TasksRepository {
@@ -47,17 +48,29 @@ export class TasksFileSystemRepository implements TasksRepository {
     await Deno.writeFile(this.pathProvider.getTasksFile(), uint8Array);
   }
 
-  async getAll(): Promise<Task[]> {
+  async getAll(fuzzyQuery?: string): Promise<Task[]> {
     await this.prepareTasksFile();
 
     const stringified = new TextDecoder().decode(
       await Deno.readFile(this.pathProvider.getTasksFile()),
     );
 
-    return (JSON.parse(stringified) as Array<
+    const tasks = (JSON.parse(stringified) as Array<
       Record<string, any>
     >)
       .map(TaskDTO.fromJSON);
+
+    if (fuzzyQuery == null) {
+      return tasks;
+    }
+
+    return fuzzy
+      .filter(fuzzyQuery, tasks, {
+        extract(input: Task): string {
+          return `${input.id} ${input.name}`;
+        },
+      })
+      .map((it) => it.original);
   }
 
   async update(task: Task): Promise<void> {

@@ -66,13 +66,15 @@ program
 program
   .command("list")
   .description("List all tasks")
+  .argument("[search]", "A search term for filtering your tasks.")
   .option(
     "--include-done",
     "Already completed tasks are included in the output",
   )
-  .action((options) => {
+  .action((queryArg, options) => {
+    const query = z.string().safeParse(queryArg);
     void container.resolve(GetTasksQueryHandler).handle(
-      new GetTasksQuery(options.includeDone ?? false),
+      new GetTasksQuery(options.includeDone ?? false, query.data ?? undefined),
     );
   });
 

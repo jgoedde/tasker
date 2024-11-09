@@ -3,7 +3,12 @@ import { Task, TaskId } from "../entities/Task.ts";
 export interface TasksRepository {
   getById(taskId: TaskId): Promise<Task | undefined>;
 
-  getAll(): Promise<Task[]>;
+  /**
+   * Gets a list of tasks.
+   *
+   * @param fuzzyQuery - If provided, only tasks that match the query are returned. If not, all tasks are returned.
+   */
+  getAll(fuzzyQuery?: string): Promise<Task[]>;
 
   add(task: Task): Promise<void>;
 
