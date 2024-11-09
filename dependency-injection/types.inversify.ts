@@ -5,4 +5,5 @@ export const TYPES = {
   AddTaskCommandHandler: Symbol.for("AddTaskCommandHandler"),
   DateProvider: Symbol.for("DateProvider"),
   RemoveTaskCommandHandler: Symbol.for("RemoveTaskCommandHandler"),
+  TaskFormatter: Symbol.for("TaskFormatter"),
 };

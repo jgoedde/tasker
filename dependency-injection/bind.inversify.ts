@@ -7,6 +7,7 @@ import { PathProvider } from "../services/PathProvider.ts";
 import { AddTaskCommandHandler } from "../use-cases/add-task/addTaskCommandHandler.ts";
 import { DateProvider } from "../services/DateProvider.ts";
 import { RemoveTaskCommandHandler } from "../use-cases/remove-task/removeTaskCommandHandler.ts";
+import { TaskFormatter } from "../services/TaskFormatter.ts";
 
 export const container = new Container();
 
@@ -29,5 +30,7 @@ export function installDependencies() {
   container.bind<PathProvider>(TYPES.PathProvider).to(PathProvider)
     .inSingletonScope();
   container.bind<DateProvider>(TYPES.DateProvider).to(DateProvider)
+    .inTransientScope();
+  container.bind<TaskFormatter>(TYPES.TaskFormatter).to(TaskFormatter)
     .inTransientScope();
 }

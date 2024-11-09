@@ -1,6 +1,7 @@
-import { TaskId } from "../../entities/Task.ts";
-
 export class CompleteTaskCommand {
-  constructor(public readonly taskId: TaskId) {
+  /**
+   * @param id - fuzzy identifier of the task. Could be the name, the id or similar.
+   */
+  constructor(public readonly id: string) {
   }
 }

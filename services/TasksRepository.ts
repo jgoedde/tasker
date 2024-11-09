@@ -8,7 +8,7 @@ export interface TasksRepository {
    *
    * @param fuzzyQuery - If provided, only tasks that match the query are returned. If not, all tasks are returned.
    */
-  getAll(fuzzyQuery?: string): Promise<Task[]>;
+  find(fuzzyQuery?: string): Promise<Task[]>;
 
   add(task: Task): Promise<void>;
 

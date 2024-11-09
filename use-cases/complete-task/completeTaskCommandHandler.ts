@@ -3,6 +3,7 @@ import type { TasksRepository } from "../../services/TasksRepository.ts";
 import { inject, injectable } from "inversify";
 import { DateProvider } from "../../services/DateProvider.ts";
 import { CompleteTaskCommand } from "./completeTaskCommand.ts";
+import { TaskFormatter } from "../../services/TaskFormatter.ts";
 
 @injectable()
 export class CompleteTaskCommandHandler {
@@ -10,19 +11,32 @@ export class CompleteTaskCommandHandler {
     @inject(TYPES.TasksRepository) private readonly tasksRepository:
       TasksRepository,
     @inject(TYPES.DateProvider) private readonly dateProvider: DateProvider,
+    @inject(TYPES.TaskFormatter) private readonly taskFormatter: TaskFormatter,
   ) {
   }
 
   public async handle(command: CompleteTaskCommand) {
-    const task = await this.tasksRepository.getById(command.taskId);
-    if (task) {
-      task.complete(this.dateProvider.now());
+    const tasks = await this.tasksRepository.find(command.id);
 
-      await this.tasksRepository.update(task);
-
-      console.info("Hurray! Task done.");
-    } else {
-      console.error("There is no such task with id " + command.taskId);
+    if (tasks.length === 0) {
+      console.error("There is no task matching your arguments.");
+      return;
     }
+
+    if (tasks.length > 1) {
+      console.warn(
+        `Ambiguous task identifier. Found ${tasks.length} tasks matching your input:`,
+      );
+      tasks.forEach((task) => console.log(this.taskFormatter.formatTask(task)));
+      return;
+    }
+
+    const task = tasks[0];
+
+    task.complete(this.dateProvider.now());
+
+    await this.tasksRepository.update(task);
+
+    console.info("Hurray! Task done.");
   }
 }

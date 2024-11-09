@@ -59,7 +59,7 @@ program
     const handler = container.resolve(AddTaskCommandHandler);
 
     void handler.handle(
-      new AddTaskCommand(task, options?.dueDate, options?.priority),
+      new AddTaskCommand(task, options?.priority ?? TaskPriority.STANDARD, options?.dueDate),
     );
   });
 
@@ -68,7 +68,7 @@ program
   .description("List all tasks")
   .argument("[search]", "A search term for filtering your tasks.")
   .option(
-    "--include-done",
+    "-d, --include-done",
     "Already completed tasks are included in the output",
   )
   .action((queryArg, options) => {
