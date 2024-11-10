@@ -59,7 +59,11 @@ program
     const handler = container.resolve(AddTaskCommandHandler);
 
     void handler.handle(
-      new AddTaskCommand(task, options?.priority ?? TaskPriority.STANDARD, options?.dueDate),
+      new AddTaskCommand(
+        task,
+        options?.priority ?? TaskPriority.STANDARD,
+        options?.due,
+      ),
     );
   });
 

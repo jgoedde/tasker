@@ -24,8 +24,8 @@ export class GetTasksQueryHandler {
       return;
     }
 
-    tasksSorted.forEach((task) => {
-      console.log(this.taskFormatter.formatTask(task));
+    tasksSorted.forEach((task, index) => {
+      console.log(`${index + 1}. ${this.taskFormatter.formatTask(task)}`);
     });
   }
 }
