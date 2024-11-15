@@ -8,24 +8,22 @@ import { Task } from "../../entities/Task.ts";
 
 @injectable()
 export class AddTaskCommandHandler {
-  public constructor(
-    @inject(TYPES.TasksRepository) private readonly tasksRepository:
-      TasksRepository,
-    @inject(TYPES.DateProvider) private readonly dateProvider: DateProvider,
-  ) {
-  }
+    public constructor(
+        @inject(TYPES.TasksRepository) private readonly tasksRepository:
+            TasksRepository,
+        @inject(TYPES.DateProvider) private readonly dateProvider: DateProvider,
+    ) {
+    }
 
-  public async handle(command: AddTaskCommand) {
-    const newTask = Task.create(
-      nanoid(10),
-      command.task,
-      this.dateProvider.now(),
-      command.priority,
-      command.dueDate,
-    );
-    await this.tasksRepository.add(newTask);
-    console.log(
-      `Added new ${command.priority} priority task "${command.task}" (${newTask.id})`,
-    );
-  }
+    public handle(command: AddTaskCommand) {
+        const newTask = Task.create(
+            nanoid(10),
+            command.task,
+            this.dateProvider.now(),
+            command.priority,
+            command.dueDate,
+        );
+
+        void this.tasksRepository.add(newTask);
+    }
 }

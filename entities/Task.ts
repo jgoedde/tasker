@@ -1,104 +1,129 @@
 export enum TaskPriority {
-  LOW = "Low",
-  STANDARD = "Standard",
-  HIGH = "High",
-  HIGHEST = "Highest",
+    LOW = "Low",
+    STANDARD = "Standard",
+    HIGH = "High",
+    HIGHEST = "Highest",
 }
 
 export class Task {
-  get priority(): TaskPriority {
-    return this._priority;
-  }
+    get priority(): TaskPriority {
+        return this._priority;
+    }
 
-  set priority(value: TaskPriority) {
-    this._priority = value;
-  }
-  private readonly _id: TaskId;
-  private _name: string;
-  private _dueDate?: Date;
-  private _doneAt?: Date;
-  private readonly _createdAt: Date;
-  private _lastModifiedAt?: Date;
-  private _priority: TaskPriority;
+    private readonly _id: string;
+    private _name: string;
+    private _dueDate?: Date;
+    private _doneAt?: Date;
+    private readonly _createdAt: Date;
+    private _lastModifiedAt?: Date;
+    private _priority: TaskPriority;
 
-  get id(): TaskId {
-    return this._id;
-  }
+    get id(): string {
+        return this._id;
+    }
 
-  get name(): string {
-    return this._name;
-  }
+    get name(): string {
+        return this._name;
+    }
 
-  get dueDate(): Date | undefined {
-    return this._dueDate;
-  }
+    get dueDate(): Date | undefined {
+        return this._dueDate;
+    }
 
-  get doneAt(): Date | undefined {
-    return this._doneAt;
-  }
+    get doneAt(): Date | undefined {
+        return this._doneAt;
+    }
 
-  get createdAt(): Date {
-    return this._createdAt;
-  }
+    get createdAt(): Date {
+        return this._createdAt;
+    }
 
-  get lastModifiedAt(): Date | undefined {
-    return this._lastModifiedAt;
-  }
+    get lastModifiedAt(): Date | undefined {
+        return this._lastModifiedAt;
+    }
 
-  public constructor(
-    id: TaskId,
-    name: string,
-    createdAt: Date,
-    priority: TaskPriority,
-    doneAt?: Date,
-    dueDate?: Date,
-    lastModifiedAt?: Date,
-  ) {
-    this._id = id;
-    this._name = name;
-    this._dueDate = dueDate;
-    this._doneAt = doneAt;
-    this._createdAt = createdAt;
-    this._lastModifiedAt = lastModifiedAt;
-    this._priority = priority;
-  }
+    public constructor(
+        id: string,
+        name: string,
+        createdAt: Date,
+        priority: TaskPriority,
+        doneAt?: Date,
+        dueDate?: Date,
+        lastModifiedAt?: Date,
+    ) {
+        this._id = id;
+        this._name = name;
+        this._dueDate = dueDate;
+        this._doneAt = doneAt;
+        this._createdAt = createdAt;
+        this._lastModifiedAt = lastModifiedAt;
+        this._priority = priority;
+    }
 
-  public complete(now: Date) {
-    this._doneAt = now;
-  }
+    /**
+     * Completes a task by setting its `doneAt` field to the provided date.
+     *
+     * @throws TaskAlreadyCompletedError when the task is already marked as done.
+     */
+    public complete(date: Date) {
+        if (this.isCompleted()) {
+            throw new TaskAlreadyCompletedError(this.id);
+        }
+        this._doneAt = date;
+    }
 
-  public changeName(name: string) {
-    this._name = name;
-    this._lastModifiedAt = new Date();
-  }
+    public changeName(name: string) {
+        this._name = name;
+        this._lastModifiedAt = new Date();
+    }
 
-  public setNewDueDate(due: Date) {
-    this._dueDate = due;
-    this._lastModifiedAt = new Date();
-  }
+    public setNewDueDate(due: Date) {
+        this._dueDate = due;
+        this._lastModifiedAt = new Date();
+    }
 
-  public updatePriority(priority: TaskPriority) {
-    this._priority = priority;
-    this._lastModifiedAt = new Date();
-  }
+    public updatePriority(priority: TaskPriority) {
+        this._priority = priority;
+        this._lastModifiedAt = new Date();
+    }
 
-  public static create(
-    id: TaskId,
-    name: string,
-    createdAt: Date,
-    priority: TaskPriority = TaskPriority.STANDARD,
-    dueDate?: Date,
-  ) {
-    return new Task(
-      id,
-      name,
-      createdAt,
-      priority,
-      undefined,
-      dueDate,
-      undefined,
-    );
-  }
+    public isCompleted() {
+        return this._doneAt != null;
+    }
+
+    public static create(
+        id: string,
+        name: string,
+        createdAt: Date,
+        priority: TaskPriority = TaskPriority.STANDARD,
+        dueDate?: Date,
+    ) {
+        return new Task(
+            id,
+            name,
+            createdAt,
+            priority,
+            undefined,
+            dueDate,
+            undefined,
+        );
+    }
 }
 
-export type TaskId = string;
+export class TaskNotFoundError extends Error {
+    constructor(public readonly searchTerm?: string) {
+        super();
+    }
+}
+
+export class AmbiguousTaskQueryError extends Error {
+    constructor(public readonly tasks: Array<Task>) {
+        super();
+    }
+}
+
+export class TaskAlreadyCompletedError extends Error {
+    constructor(public readonly taskId: string) {
+        super();
+    }
+}

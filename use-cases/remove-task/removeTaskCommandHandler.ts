@@ -1,19 +1,37 @@
 import { TYPES } from "../../dependency-injection/types.inversify.ts";
 import type { TasksRepository } from "../../services/TasksRepository.ts";
 import { inject, injectable } from "inversify";
-import { DateProvider } from "../../services/DateProvider.ts";
 import { RemoveTaskCommand } from "./removeTaskCommand.ts";
+import {
+    AmbiguousTaskQueryError,
+    TaskNotFoundError,
+} from "../../entities/Task.ts";
 
 @injectable()
 export class RemoveTaskCommandHandler {
-  public constructor(
-    @inject(TYPES.TasksRepository) private readonly tasksRepository:
-      TasksRepository,
-    @inject(TYPES.DateProvider) private readonly dateProvider: DateProvider,
-  ) {
-  }
+    public constructor(
+        @inject(TYPES.TasksRepository) private readonly tasksRepository:
+            TasksRepository,
+    ) {
+    }
 
-  public async handle(command: RemoveTaskCommand) {
-    await this.tasksRepository.delete(command.taskId);
-  }
+    /**
+     * Removes a task.
+     *
+     * @throws TaskNotFoundError when no task can be found with the provided search term.
+     * @throws AmbiguousTaskQueryError when there were more than one task found for the provided search term.
+     */
+    public async handle(command: RemoveTaskCommand): Promise<void> {
+        const tasks = await this.tasksRepository.find(command.task);
+
+        if (tasks.length === 0) {
+            throw new TaskNotFoundError();
+        }
+
+        if (tasks.length > 1) {
+            throw new AmbiguousTaskQueryError(tasks);
+        }
+
+        await this.tasksRepository.delete(tasks[0].id);
+    }
 }

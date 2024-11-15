@@ -1,7 +1,9 @@
 export class CompleteTaskCommand {
-  /**
-   * @param id - fuzzy identifier of the task. Could be the name, the id or similar.
-   */
-  constructor(public readonly id: string) {
-  }
+    /**
+     * Defines the command to mark a task as complete.
+     *
+     * @param task A fuzzy identifier of the task. Could be the name or the direct task ID.
+     */
+    constructor(public readonly task: string) {
+    }
 }

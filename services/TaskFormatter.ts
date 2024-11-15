@@ -1,46 +1,63 @@
 import { injectable } from "inversify";
 import { Task, TaskPriority } from "../entities/Task.ts";
-import { formatDistance } from "date-fns";
+import { formatDistance, isPast } from "date-fns";
+import { colors } from "@cliffy/ansi/colors";
 
 /**
  * Formats a task for console printing.
- * @TODO - make use of cliffy deno package to display it prettily with colors.
  */
 @injectable()
 export class TaskFormatter {
-  public formatTask(task: Task): string {
-    let str = "";
-    if (task.doneAt != null) {
-      str += "[Done] ";
+    public formatTask(task: Task): string {
+        let str = "";
+        if (task.isCompleted()) {
+            str += colors.green("[Done] ");
+        }
+
+        str += task.name;
+
+        const formattedPriority = this.getPriority(task.priority);
+
+        if (formattedPriority != null) {
+            str += `${colors.reset(", ") + formattedPriority}`;
+        }
+
+        if (task.dueDate != null) {
+            str += ", ";
+            if (isPast(task.dueDate) && !task.isCompleted()) {
+                str += colors.red(
+                    `due ${
+                        formatDistance(task.dueDate, new Date(), {
+                            addSuffix: true,
+                        })
+                    }`,
+                );
+            } else {
+                str += colors.reset(
+                    `due ${
+                        formatDistance(task.dueDate, new Date(), {
+                            addSuffix: true,
+                        })
+                    }`,
+                );
+            }
+        }
+
+        str += colors.gray(` (${task.id})`);
+
+        return str;
     }
 
-    str += task.name;
-
-    const formattedPrio = this.getPriority(task.priority);
-
-    if (formattedPrio != null) {
-      str += ", " + formattedPrio + " priority";
+    private getPriority(priority: TaskPriority): string | undefined {
+        switch (priority) {
+            case TaskPriority.LOW:
+                return colors.gray("Low priority");
+            case TaskPriority.STANDARD:
+                return undefined;
+            case TaskPriority.HIGH:
+                return colors.brightYellow("High priority");
+            case TaskPriority.HIGHEST:
+                return colors.brightRed("Highest priority");
+        }
     }
-
-    if (task.dueDate != null) {
-      str += `, due ${
-        formatDistance(task.dueDate, new Date(), { addSuffix: true })
-      }`;
-    }
-
-    return str;
-  }
-
-  private getPriority(priority: TaskPriority): string | undefined {
-    switch (priority) {
-      case TaskPriority.LOW:
-        return "Low";
-      case TaskPriority.STANDARD:
-        return undefined;
-      case TaskPriority.HIGH:
-        return "High";
-      case TaskPriority.HIGHEST:
-        return "Highest";
-    }
-  }
 }

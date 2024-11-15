@@ -12,25 +12,25 @@ import { TaskFormatter } from "../services/TaskFormatter.ts";
 export const container = new Container();
 
 export function installDependencies() {
-  container.bind<TasksRepository>(TYPES.TasksRepository).to(
-    TasksFileSystemRepository,
-  );
-  container.bind<GetTasksQueryHandler>(TYPES.QueryTasksHandler).to(
-    GetTasksQueryHandler,
-  )
-    .inTransientScope();
-  container.bind<AddTaskCommandHandler>(TYPES.AddTaskCommandHandler).to(
-    AddTaskCommandHandler,
-  )
-    .inTransientScope();
-  container.bind<RemoveTaskCommandHandler>(TYPES.RemoveTaskCommandHandler).to(
-    RemoveTaskCommandHandler,
-  )
-    .inTransientScope();
-  container.bind<PathProvider>(TYPES.PathProvider).to(PathProvider)
-    .inSingletonScope();
-  container.bind<DateProvider>(TYPES.DateProvider).to(DateProvider)
-    .inTransientScope();
-  container.bind<TaskFormatter>(TYPES.TaskFormatter).to(TaskFormatter)
-    .inTransientScope();
+    container.bind<TasksRepository>(TYPES.TasksRepository).to(
+        TasksFileSystemRepository,
+    );
+    container.bind<GetTasksQueryHandler>(TYPES.QueryTasksHandler).to(
+        GetTasksQueryHandler,
+    )
+        .inTransientScope();
+    container.bind<AddTaskCommandHandler>(TYPES.AddTaskCommandHandler).to(
+        AddTaskCommandHandler,
+    )
+        .inTransientScope();
+    container.bind<RemoveTaskCommandHandler>(TYPES.RemoveTaskCommandHandler).to(
+        RemoveTaskCommandHandler,
+    )
+        .inTransientScope();
+    container.bind<PathProvider>(TYPES.PathProvider).to(PathProvider)
+        .inSingletonScope();
+    container.bind<DateProvider>(TYPES.DateProvider).to(DateProvider)
+        .inTransientScope();
+    container.bind<TaskFormatter>(TYPES.TaskFormatter).to(TaskFormatter)
+        .inTransientScope();
 }
