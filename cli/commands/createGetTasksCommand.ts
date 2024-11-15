@@ -3,6 +3,8 @@ import { container } from "../../dependency-injection/bind.inversify.ts";
 import { GetTasksQueryHandler } from "../../use-cases/get-all-tasks/getTasksQueryHandler.ts";
 import { GetTasksQuery } from "../../use-cases/get-all-tasks/getTasksQuery.ts";
 import z from "zod";
+import { colors } from "@cliffy/ansi/colors";
+import { TaskFormatter } from "../../services/TaskFormatter.ts";
 
 export function createGetTasksCommand() {
     return new Command()
@@ -36,14 +38,23 @@ export function createGetTasksCommand() {
         );
 }
 
-function onAction(
+async function onAction(
     { filter, includeDone }: { filter?: string; includeDone: boolean },
 ) {
     const query = z.string().safeParse(filter);
+    const taskFormatter: TaskFormatter = container.resolve(TaskFormatter);
     const handler: GetTasksQueryHandler = container.resolve(
         GetTasksQueryHandler,
     );
-    void handler.handle(
+    const tasks = await handler.handle(
         new GetTasksQuery(includeDone, query.data ?? undefined),
     );
+
+    if (tasks.length === 0) {
+        console.info(colors.gray("There is nothing to do right now."));
+    }
+
+    tasks.forEach((task, idx) => {
+        console.log(`${idx + 1}. ${taskFormatter.formatTask(task)}`);
+    });
 }

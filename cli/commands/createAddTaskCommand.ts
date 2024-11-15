@@ -8,6 +8,9 @@ import * as chrono from "chrono-node";
 import { isPast } from "date-fns";
 import { Confirm } from "@cliffy/prompt/confirm";
 import { prompt } from "@cliffy/prompt";
+import { colors } from "@cliffy/ansi/colors";
+
+const messages = ["Good luck!", "Have fun!", "Do not procrastinate!"];
 
 export function createAddTaskCommand() {
     return new Command()
@@ -38,7 +41,6 @@ export function createAddTaskCommand() {
         .description("Add a new task")
         .action(handleAction);
 }
-
 function priorityOptionTransformer(
     value: string,
 ) {
@@ -52,13 +54,11 @@ function priorityOptionTransformer(
     }
     return priority.data;
 }
-
 async function handleAction(
     options: { due?: Date; priority?: TaskPriority },
-    ...task: string[]
+    ...args: string[]
 ) {
     const dueDate = options.due;
-
     if (dueDate != null && isPast(dueDate)) {
         const result = await prompt([{
             name: "shouldIgnorePastDueDate",
@@ -68,7 +68,6 @@ async function handleAction(
             hideDefault: false,
             default: false,
         }]);
-
         if (!result.shouldIgnorePastDueDate) {
             console.info("Did not proceed to add task.");
             return;
@@ -78,12 +77,23 @@ async function handleAction(
     const handler: AddTaskCommandHandler = container.resolve(
         AddTaskCommandHandler,
     );
+    const task = args.join(" ");
+
+    const priority = options.priority ?? TaskPriority.STANDARD;
 
     handler.handle(
         new AddTaskCommand(
-            task.join(" "),
-            options.priority ?? TaskPriority.STANDARD,
+            task,
+            priority,
             dueDate,
+        ),
+    );
+
+    console.info(
+        colors.brightGreen(
+            `Added new task "${task}" with ${priority} priority. ${
+                messages[Math.floor(Math.random() * messages.length)]
+            }`,
         ),
     );
 }

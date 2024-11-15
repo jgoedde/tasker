@@ -30,15 +30,18 @@ function onAction(_: unknown, ...id: string[]) {
         CompleteTaskCommandHandler,
     );
 
-    void handler.handle(
+    handler.handle(
         new CompleteTaskCommand(id.join(" ")),
     )
+        .then((task) => {
+            console.log(colors.brightGreen(`Hurray, task ${task.name} done!`));
+        })
         .catch(ofClass(TaskAlreadyCompletedError, (_) => {
             console.info(
                 "This task is already done. Try a different search term or specify an ID.",
             );
         }))
-        .catch(ofClass(TaskNotFoundError, (e) => {
+        .catch(ofClass(TaskNotFoundError, (_) => {
             console.error(
                 "There is no task matching your provided search term. Try a different search term or specify an ID.",
             );
