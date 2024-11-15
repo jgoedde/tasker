@@ -30,7 +30,10 @@ function onAction(id: string) {
     const command = new RemoveTaskCommand(id);
 
     void handler.handle(command)
-        .catch(ofClass(TaskNotFoundError, (e) => {
+        .then(() => {
+            console.info(colors.brightGreen("The task was successfully removed."))
+        })
+        .catch(ofClass(TaskNotFoundError, (_) => {
             console.error(
                 colors.brightRed(
                     `There was no task matching your task identifier "${command.task}"`,

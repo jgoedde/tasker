@@ -5,6 +5,7 @@ import { DateProvider } from "../../services/DateProvider.ts";
 import { CompleteTaskCommand } from "./completeTaskCommand.ts";
 import {
     AmbiguousTaskQueryError,
+    Task,
     TaskNotFoundError,
 } from "../../entities/Task.ts";
 
@@ -24,7 +25,7 @@ export class CompleteTaskCommandHandler {
      * @throws AmbiguousTaskQueryError
      * @throws TaskAlreadyCompletedError
      */
-    public async handle(command: CompleteTaskCommand) {
+    public async handle(command: CompleteTaskCommand): Promise<Task> {
         const tasks = await this.tasksRepository.find(command.task);
 
         if (tasks.length === 0) {
@@ -39,6 +40,8 @@ export class CompleteTaskCommandHandler {
 
         task.complete(this.dateProvider.now());
 
-        void this.tasksRepository.update(task);
+        await this.tasksRepository.update(task);
+
+        return task;
     }
 }
